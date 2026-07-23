@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Generator API — Documentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream: #fdf3f8;
+    --panel: #ffffff;
+    --plum: #4a1338;
+    --plum-soft: #7a4560;
+    --pink: #d6417a;
+    --pink-deep: #b02a5f;
+    --pink-pale: #fbd8f5;
+    --rose: #deaeae;
+    --code-bg: #2b1620;
+    --code-text: #f6dcec;
+    --code-accent: #ff9ecb;
+    --line: #f0d6e6;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  body{
+    font-family:'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--plum);
+    line-height: 1.6;
+  }
+
+  h1, h2, h3{
+    font-family:'Fraunces', serif;
+    color: var(--plum);
+    letter-spacing: -0.01em;
+  }
+
+  code, pre, .mono{
+    font-family:'JetBrains Mono', monospace;
+  }
+
+  a{ color: var(--pink-deep); }
+
+  /* ---------- Layout ---------- */
+  .shell{
+    display:grid;
+    grid-template-columns: 260px 1fr;
+    min-height:100vh;
+  }
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding: 32px 24px;
+    position: sticky;
+    top:0;
+    height:100vh;
+    overflow-y:auto;
+  }
+
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom: 36px;
+  }
+
+  .brand-mark{
+    width:34px; height:34px;
+    border-radius:8px;
+    background: var(--plum);
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(3,1fr);
+    padding:5px;
+    gap:2px;
+  }
+  .brand-mark span{ background: var(--pink-pale); border-radius:1px; }
+  .brand-mark span:nth-child(2), .brand-mark span:nth-child(4),
+  .brand-mark span:nth-child(6), .brand-mark span:nth-child(8){ background: transparent; }
+
+  .brand-name{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: 17px;
+  }
+  .brand-name small{
+    display:block;
+    font-family:'Inter', sans-serif;
+    font-weight:400;
+    font-size:11px;
+    color: var(--plum-soft);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .nav-group{ margin-bottom: 26px; }
+  .nav-label{
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:0.08em;
+    color: var(--plum-soft);
+    margin-bottom:10px;
+    font-weight:600;
+  }
+  .nav-group a{
+    display:block;
+    padding: 6px 0;
+    color: var(--plum);
+    text-decoration:none;
+    font-size:14px;
+    border-left: 2px solid transparent;
+    padding-left:10px;
+    margin-left:-10px;
+    transition: all 0.15s ease;
+  }
+  .nav-group a:hover{
+    color: var(--pink-deep);
+    border-left-color: var(--pink);
+    background: var(--pink-pale);
+    border-radius: 0 6px 6px 0;
+  }
+
+  /* ---------- Main content ---------- */
+  main{
+    padding: 56px 64px 120px;
+    max-width: 780px;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--pink-deep);
+    background: var(--pink-pale);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight:600;
+    margin-bottom:18px;
+  }
+
+  h1.page-title{
+    font-size: 42px;
+    font-weight:600;
+    margin-bottom: 14px;
+  }
+
+  .lede{
+    font-size:17px;
+    color: var(--plum-soft);
+    max-width: 60ch;
+    margin-bottom: 40px;
+  }
+
+  section{
+    margin-top: 64px;
+    scroll-margin-top: 32px;
+  }
+
+  section h2{
+    font-size: 26px;
+    font-weight:600;
+    margin-bottom: 8px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  section > p{ margin: 16px 0; color: var(--plum-soft); }
+
+  .endpoint{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin: 20px 0 4px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 14px;
+  }
+
+  .method{
+    font-weight:600;
+    font-size:12px;
+    padding: 3px 9px;
+    border-radius:5px;
+    letter-spacing:0.03em;
+  }
+  .method.post{ background:#e9d9ff; color:#5a2ba8; }
+  .method.get{ background:#d9f2e6; color:#146c43; }
+
+  .path{
+    color: var(--plum);
+    font-weight:500;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    margin: 18px 0 6px;
+    font-size: 14px;
+  }
+  th, td{
+    text-align:left;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  th{
+    color: var(--plum-soft);
+    font-weight:600;
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.05em;
+  }
+  td code{
+    background: var(--pink-pale);
+    color: var(--pink-deep);
+    padding: 1px 6px;
+    border-radius:4px;
+    font-size:13px;
+  }
+
+  /* ---------- Code blocks with QR-corner framing (signature element) ---------- */
+  .code-wrap{
+    position: relative;
+    margin: 18px 0 28px;
+    border-radius: 12px;
+    padding: 3px;
+  }
+  .code-wrap::before,
+  .code-wrap::after,
+  .code-wrap .corner-tr,
+  .code-wrap .corner-br{
+    content:"";
+    position:absolute;
+    width: 16px; height:16px;
+    border: 2px solid var(--pink);
+    z-index: 2;
+  }
+  .code-wrap::before{ top:-2px; left:-2px; border-right:none; border-bottom:none; border-radius: 6px 0 0 0; }
+  .code-wrap::after{ bottom:-2px; left:-2px; border-right:none; border-top:none; border-radius: 0 0 0 6px; }
+  .code-wrap .corner-tr{ top:-2px; right:-2px; border-left:none; border-bottom:none; border-radius: 0 6px 0 0; }
+  .code-wrap .corner-br{ bottom:-2px; right:-2px; border-left:none; border-top:none; border-radius: 0 0 6px 0; }
+
+  pre{
+    background: var(--code-bg);
+    color: var(--code-text);
+    padding: 22px 24px;
+    border-radius: 10px;
+    overflow-x:auto;
+    font-size: 13.5px;
+    line-height: 1.65;
+  }
+
+  .code-label{
+    position:absolute;
+    top: -11px;
+    left: 20px;
+    background: var(--cream);
+    color: var(--plum-soft);
+    font-size:11px;
+    padding: 0 8px;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    font-weight:600;
+    z-index: 3;
+  }
+
+  .tok-key{ color: var(--code-accent); }
+  .tok-str{ color: #b8f2d0; }
+  .tok-com{ color: #8a6b7c; }
+  .tok-fn{ color: #9ecbff; }
+
+  .callout{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--pink);
+    border-radius: 8px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: var(--plum-soft);
+    margin: 20px 0;
+  }
+  .callout strong{ color: var(--plum); }
+
+  .status-grid{
+    display:grid;
+    grid-template-columns: 90px 1fr;
+    gap: 6px 16px;
+    font-size: 14px;
+    margin-top: 12px;
+  }
+  .status-code{
+    font-family:'JetBrains Mono', monospace;
+    font-weight:600;
+    color: var(--pink-deep);
+  }
+
+  footer{
+    margin-top: 90px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    color: var(--plum-soft);
+    font-size: 13px;
+  }
+
+  @media (max-width: 900px){
+    .shell{ grid-template-columns: 1fr; }
+    .sidebar{ position: relative; height: auto; }
+    main{ padding: 40px 24px 100px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+        <span></span><span></span><span></span>
+      </div>
+      <div class="brand-name">TextQR<small>API Reference</small></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Get Started</div>
+      <a href="#overview">Overview</a>
+      <a href="#auth">Authentication</a>
+      <a href="#rate-limits">Rate limits</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Endpoints</div>
+      <a href="#generate">Generate a QR code</a>
+      <a href="#style">Apply a style</a>
+      <a href="#download">Download image</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">Reference</div>
+      <a href="#styles">Style presets</a>
+      <a href="#errors">Error codes</a>
+    </div>
+  </aside>
+
+  <main>
+    <span class="eyebrow">v1</span>
+    <h1 class="page-title">TextQR API</h1>
+    <p class="lede">Turn text into a styled, scannable QR code — generate, theme, and export images with a few HTTP calls. This reference covers every endpoint the generator on this site is built on.</p>
+
+    <section id="overview">
+      <h2>Overview</h2>
+      <p>The TextQR API accepts plain text — a message, link, or contact string — and returns a QR code you can render as a canvas image, style with a color preset, and download as a PNG. All requests and responses use JSON.</p>
+      <p>Base URL:</p>
+      <div class="code-wrap">
+        <span class="corner-tr"></span><span class="corner-br"></span>
+        <span class="code-label">Base URL</span>
+        <pre>https://api.textqr.dev/v1</pre>
+      </div>
+    </section>
+
+    <section id="auth">
+      <h2>Authentication</h2>
+      <p>Every request needs an API key passed in the <code>Authorization</code> header. Keys are issued from your account dashboard and never expire unless revoked.</p>
+      <div class="code-wrap">
+        <span class="corner-tr"></span><span class="corner-br"></span>
+        <span class="code-label">cURL</span>
+        <pre><span class="tok-com"># Include your key on every request</span>
+curl https://api.textqr.dev/v1/qr \
+  -H <span class="tok-str">"Authorization: Bearer YOUR_API_KEY"</span></pre>
+      </div>
+      <div class="callout">
+        <strong>Keep keys private.</strong> Treat your API key like a password — requests made with it are billed and rate-limited to your account.
+      </div>
+    </section>
+
+    <section id="rate-limits">
+      <h2>Rate limits</h2>
+      <p>Free accounts can make up to 100 requests per hour. Each response includes headers showing your current usage.</p>
+      <table>
+        <tr><th>Header</th><th>Description</th></tr>
+        <tr><td><code>X-RateLimit-Limit</code></td><td>Requests allowed per hour</td></tr>
+        <tr><td><code>X-RateLimit-Remaining</code></td><td>Requests left in the current window</td></tr>
+        <tr><td><code>X-RateLimit-Reset</code></td><td>Seconds until the limit resets</td></tr>
+      </table>
+    </section>
+
+    <section id="generate">
+      <h2>Generate a QR code</h2>
+      <div class="endpoint"><span class="method post">POST</span><span class="path">/v1/qr</span></div>
+      <p>Converts text into a QR code and returns a reference you can style or download.</p>
+
+      <table>
+        <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+        <tr><td><code>text</code></td><td>string</td><td>The content to encode. Required.</td></tr>
+        <tr><td><code>size</code></td><td>integer</td><td>Output size in pixels. Defaults to <code>300</code>.</td></tr>
+      </table>
+
+      <div class="code-wrap">
+        <span class="corner-tr"></span><span class="corner-br"></span>
+        <span class="code-label">Request</span>
+        <pre><span class="tok-fn">fetch</span>(<span class="tok-str">"https://api.textqr.dev/v1/qr"</span>, {
+  method: <span class="tok-str">"POST"</span>,
+  headers: {
+    <span class="tok-key">"Authorization"</span>: <span class="tok-str">"Bearer YOUR_API_KEY"</span>,
+    <span class="tok-key">"Content-Type"</span>: <span class="tok-str">"application/json"</span>
+  },
+  body: JSON.stringify({
+    text: <span class="tok-str">"https://example.com"</span>,
+    size: 300
+  })
+});</pre>
+      </div>
+
+      <div class="code-wrap">
+        <span class="corner-tr"></span><span class="corner-br"></span>
+        <span class="code-label">Response — 201 Created</span>
+        <pre>{
+  <span class="tok-key">"id"</span>: <span class="tok-str">"qr_8f3a2c"</span>,
+  <span class="tok-key">"text"</span>: <span class="tok-str">"https://example.com"</span>,
+  <span class="tok-key">"size"</span>: 300,
+  <span class="tok-key">"style"</span>: <span class="tok-str">"default"</span>,
+  <span class="tok-key">"created_at"</span>: <span class="tok-str">"2026-07-24T09:12:00Z"</span>
+}</pre>
+      </div>
+    </section>
+
+    <section id="style">
+      <h2>Apply a style</h2>
+      <div class="endpoint"><span class="method post">POST</span><span class="path">/v1/qr/{id}/style</span></div>
+      <p>Applies one of the built-in color presets to an existing QR code. See <a href="#styles">Style presets</a> for the full list of names.</p>
+
+      <div class="code-wrap">
+        <span class="corner-tr"></span><span class="corner-br"></span>
+        <span class="code-label">Request</span>
+        <pre><span class="tok-fn">fetch</span>(<span class="tok-str">"https://api.textqr.dev/v1/qr/qr_8f3a2c/style"</span>, {
+  method: <span class="tok-str">"POST"</span>,
+  headers: {
+    <span class="tok-key">"Authorization"</span>: <span class="tok-str">"Bearer YOUR_API_KEY"</span>,
+    <span class="tok-key">"Content-Type"</span>: <span class="tok-str">"application/json"</span>
+  },
+  body: JSON.stringify({ style: <span class="tok-str">"cool-purple"</span> })
+});</pre>
+      </div>
+    </section>
+
+    <section id="download">
+      <h2>Download image</h2>
+      <div class="endpoint"><span class="method get">GET</span><span class="path">/v1/qr/{id}/download</span></div>
+      <p>Returns the finished QR code as a PNG file, ready to save or embed.</p>
+      <div class="code-wrap">
+        <span class="corner-tr"></span><span class="corner-br"></span>
+        <span class="code-label">cURL</span>
+        <pre>curl https://api.textqr.dev/v1/qr/qr_8f3a2c/download \
+  -H <span class="tok-str">"Authorization: Bearer YOUR_API_KEY"</span> \
+  -o my-qr-code.png</pre>
+      </div>
+    </section>
+
+    <section id="styles">
+      <h2>Style presets</h2>
+      <p>Six built-in presets are available for the <code>style</code> field. Each pairs a dot color, corner color, and accent color.</p>
+      <table>
+        <tr><th>Name</th><th>Description</th></tr>
+        <tr><td><code>90s-neon</code></td><td>Teal dots with a bright pink corner accent</td></tr>
+        <tr><td><code>valentine-red</code></td><td>Deep red dots with a sky-blue corner accent</td></tr>
+        <tr><td><code>khaki-punk</code></td><td>Warm khaki dots with an olive corner accent</td></tr>
+        <tr><td><code>touch-grass</code></td><td>Green dots with a soft yellow corner accent</td></tr>
+        <tr><td><code>cool-purple</code></td><td>Magenta dots with a blue corner accent</td></tr>
+        <tr><td><code>sophisticated-black</code></td><td>Grey dots with a solid black corner accent</td></tr>
+      </table>
+    </section>
+
+    <section id="errors">
+      <h2>Error codes</h2>
+      <p>Failed requests return a JSON body with a <code>message</code> field explaining what went wrong.</p>
+      <div class="status-grid">
+        <span class="status-code">400</span><span>The request body is missing or malformed — usually a missing <code>text</code> field.</span>
+        <span class="status-code">401</span><span>The API key is missing, invalid, or has been revoked.</span>
+        <span class="status-code">404</span><span>No QR code exists with the given <code>id</code>.</span>
+        <span class="status-code">429</span><span>Too many requests — you've hit your hourly rate limit.</span>
+        <span class="status-code">500</span><span>Something failed on our end. Retry after a short delay.</span>
+      </div>
+    </section>
+
+    <footer>
+      Built for the TextQR generator · <a href="index.html">Back to the app</a>
+    </footer>
+  </main>
+
+</div>
+
+</body>
+</html>
