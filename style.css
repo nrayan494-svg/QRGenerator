@@ -3,12 +3,14 @@
     margin: 0;
 }
 #Wrap{
-    height: 1100px;
+    height: auto;
+    min-height: 900px;
+    padding: 60px 0;
     background-color: #deaeae;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: visible; 
 }
 .content{
     display: inline;
@@ -106,18 +108,18 @@
 
 .paras{
     background-color: #deaeae;
-    height: 800px;
+    height: auto;           
+    min-height: 800px;      
+    padding: 60px 20px 80px; 
     position: relative;
-    
 }
 .para{
     margin-bottom: 110px;
     color: #5d1647;
     text-align: center;
 }
-.para , .heading{
-    position: relative;
-    top: 40px;
+.para, .heading{
+    position: static;  
 }
 .heading{
     color: #571844;
@@ -126,7 +128,7 @@
 .qrchoice{
     position: fixed;
     inset: 0;
-    display: none;              /* hidden until opened */
+    display: none;            
     align-items: center;
     justify-content: center;
     z-index: 1000;
@@ -134,7 +136,7 @@
 }
 
 .qrchoice.open{
-    display: flex;               /* JS toggles this class to show it */
+    display: flex;             
 }
 
 #content{
@@ -204,7 +206,7 @@
     width: 300px;
 }
 
-/* ---------- Mirror shine effect on buttons + input ---------- */
+
 .btn,
 .Butt,
 .content input {
